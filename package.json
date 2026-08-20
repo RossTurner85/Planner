@@ -1,6 +1,6 @@
 {
   "name": "bizzys-finance",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "author": "Ross Turner",
   "description": "Local-first multi-profile personal finance app",

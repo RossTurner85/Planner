@@ -4,6 +4,7 @@ import {
   ipcMain,
   dialog,
   shell,
+  screen,
 } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs'
@@ -51,6 +52,15 @@ const isDev = Boolean(process.env.VITE_DEV_SERVER_URL)
  */
 app.setPath('userData', path.join(app.getPath('appData'), 'bizzys-finance'))
 
+const gotLock = app.requestSingleInstanceLock()
+if (!gotLock) {
+  app.quit()
+}
+
+app.on('second-instance', () => {
+  revealWindow(mainWindow)
+})
+
 /**
  * Chromium stops painting a window it thinks is covered, which makes the app
  * show a frozen frame while the editor is in front — hot reloads look like they
@@ -61,14 +71,32 @@ if (isDev) {
   app.commandLine.appendSwitch('disable-backgrounding-occluded-windows')
 }
 
+function revealWindow(win: BrowserWindow | null) {
+  if (!win || win.isDestroyed()) return
+  const area = screen.getPrimaryDisplay().workArea
+  const width = Math.min(1320, area.width)
+  const height = Math.min(860, area.height)
+  win.setBounds({
+    x: area.x + Math.round((area.width - width) / 2),
+    y: area.y + Math.round((area.height - height) / 2),
+    width,
+    height,
+  })
+  if (win.isMinimized()) win.restore()
+  win.show()
+  win.moveTop()
+  win.focus()
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1320,
     height: 860,
-    minWidth: 1050,
-    minHeight: 700,
+    minWidth: 800,
+    minHeight: 560,
     title: "Bizzy's Finance",
     backgroundColor: '#e8ebe4',
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -78,12 +106,23 @@ function createWindow() {
     },
   })
 
+  mainWindow.once('ready-to-show', () => revealWindow(mainWindow))
+  mainWindow.webContents.on('did-fail-load', (_event, _code, desc, url) => {
+    dialog.showErrorBox(
+      "Bizzy's Finance could not open",
+      `${desc}\n\n${url || ''}`,
+    )
+  })
+
   if (isDev) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL as string)
     mainWindow.webContents.openDevTools({ mode: 'detach' })
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
   }
+
+  // If the page hangs, still put a window on this monitor.
+  setTimeout(() => revealWindow(mainWindow), 2500)
 }
 
 function registerIpc() {
@@ -848,15 +887,25 @@ function buildCoachContext(profileId: number, month: string): CoachContext {
 }
 
 app.whenReady().then(() => {
-  const dataDir = path.join(app.getPath('userData'), 'data')
-  fs.mkdirSync(dataDir, { recursive: true })
-  db = new FinanceDb(path.join(dataDir, 'finance.db'))
-  db.seedIfEmpty()
-  registerIpc()
-  setupAutoUpdater(() => mainWindow)
-  createWindow()
-  startAutoSync(db, () => mainWindow)
-  scheduleUpdateCheck()
+  if (!gotLock) return
+  try {
+    const dataDir = path.join(app.getPath('userData'), 'data')
+    fs.mkdirSync(dataDir, { recursive: true })
+    db = new FinanceDb(path.join(dataDir, 'finance.db'))
+    db.seedIfEmpty()
+    registerIpc()
+    setupAutoUpdater(() => mainWindow)
+    createWindow()
+    startAutoSync(db, () => mainWindow)
+    scheduleUpdateCheck()
+  } catch (err) {
+    dialog.showErrorBox(
+      "Bizzy's Finance could not start",
+      err instanceof Error ? err.message : String(err),
+    )
+    app.quit()
+    return
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
