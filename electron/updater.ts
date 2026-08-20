@@ -13,7 +13,7 @@ import os from 'node:os'
 import path from 'node:path'
 
 export const GITHUB_RELEASES_URL =
-  'https://github.com/RossTurner85/bizzys-finance/releases/latest'
+  'https://github.com/RossTurner85/Planner/releases/latest'
 
 export type UpdateSource = 'github' | 'local'
 

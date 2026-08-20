@@ -45,7 +45,7 @@ SQLite database lives under Electron `userData` (local only). No cloud, no bank 
 
 Windows and Mac are **different files**. A `.exe` will not run on Nicole's Mac. A `.dmg` will not run on this PC.
 
-Installers are published at [github.com/RossTurner85/bizzys-finance/releases](https://github.com/RossTurner85/bizzys-finance/releases).
+Installers are published at [github.com/RossTurner85/Planner/releases](https://github.com/RossTurner85/Planner/releases). The GitHub repo is named Planner; the app is still Bizzy's Finance.
 
 ### Windows (this PC)
 

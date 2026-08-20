@@ -6,7 +6,7 @@
   "description": "Local-first multi-profile personal finance app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RossTurner85/bizzys-finance.git"
+    "url": "https://github.com/RossTurner85/Planner.git"
   },
   "main": "dist-electron/main.js",
   "scripts": {
@@ -62,7 +62,8 @@
     "publish": {
       "provider": "github",
       "owner": "RossTurner85",
-      "repo": "bizzys-finance"
+      "repo": "Planner",
+      "private": true
     },
     "win": {
       "icon": "build/icon.ico",
