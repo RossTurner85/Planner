@@ -780,11 +780,13 @@ export class FinanceDb {
       const people: Array<{
         name: string
         color: string
+        role: ProfileRole
         accounts: Array<[string, string, string, number]>
       }> = [
         {
           name: 'Ross',
           color: '#2F6F5E',
+          role: 'adult',
           accounts: [
             ['Checking · Main', 'checking', 'Bank', 0],
             ['Checking · Side', 'checking', 'Bank', 0],
@@ -797,6 +799,7 @@ export class FinanceDb {
         {
           name: 'Nicole',
           color: '#C45C26',
+          role: 'adult',
           accounts: [
             ['Checking', 'checking', 'Bank', 0],
             ['Savings', 'savings', 'Bank', 0],
@@ -807,22 +810,25 @@ export class FinanceDb {
         {
           name: 'Zac',
           color: '#3B6FA0',
+          role: 'dependent',
           accounts: [['Account', 'checking', 'Bank', 0]],
         },
         {
           name: 'Zoey',
           color: '#8B5E9A',
+          role: 'dependent',
           accounts: [['Account', 'checking', 'Bank', 0]],
         },
         {
           name: 'Lux',
           color: '#B08D2E',
+          role: 'dependent',
           accounts: [['Account', 'checking', 'Bank', 0]],
         },
       ]
 
       for (const person of people) {
-        const info = insertProfile.run(person.name, person.color)
+        const info = insertProfile.run(person.name, person.color, person.role)
         const profileId = Number(info.lastInsertRowid)
         this.seedCategories(profileId)
         for (const [name, type, institution, balance] of person.accounts) {
