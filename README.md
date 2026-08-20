@@ -59,11 +59,16 @@ Run the new Setup file once. You do **not** uninstall first — your accounts li
 
 ### Mac (Nicole)
 
-Do **not** send her the Windows Setup exe. She needs `Bizzys-Finance-0.1.1.dmg` from GitHub Releases (built by GitHub Actions on a Mac runner) or from `npm run dist:mac` on a Mac.
+Do **not** send her the Windows Setup exe. She needs `Bizzys-Finance-0.1.4.dmg` from GitHub Releases.
 
-First open: right-click the app → Open → Open (unsigned until we have an Apple developer ID).
+macOS will often say an unsigned GitHub download is **damaged**. It is not. After putting the app in Applications, run this in Terminal:
 
-Until household WiFi sharing is done, her Mac keeps its own empty database. Don't copy `finance.db` onto her machine.
+```bash
+xattr -cr "/Applications/Bizzy's Finance.app"
+open "/Applications/Bizzy's Finance.app"
+```
+
+Until we pay for an Apple developer ID and notarize, that Terminal step is required for downloads from the internet. Until household WiFi sharing is done, her Mac keeps its own empty database. Don't copy `finance.db` onto her machine.
 
 ### Updates
 

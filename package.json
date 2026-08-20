@@ -1,6 +1,6 @@
 {
   "name": "bizzys-finance",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "author": "Ross Turner",
   "description": "Local-first multi-profile personal finance app",
@@ -91,6 +91,9 @@
       "icon": "build/icon.png",
       "category": "public.app-category.finance",
       "artifactName": "Bizzys-Finance-${version}.${ext}",
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
       "target": [
         "dmg",
         "zip"

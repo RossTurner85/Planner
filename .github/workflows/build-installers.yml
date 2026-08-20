@@ -28,6 +28,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: ${{ matrix.cmd }}
+        env:
+          # Unsigned family build. A CI "signature" makes macOS say the app is damaged.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
       - uses: actions/upload-artifact@v4
         with:
           name: installer-${{ matrix.os }}
@@ -65,5 +68,5 @@ jobs:
           else
             gh release create "$TAG" "${files[@]}" \
               --title "$VERSION" \
-              --notes "Bizzy's Finance $VERSION. Windows: run the Setup exe (do not uninstall first). Mac: open the dmg, then right-click the app → Open the first time."
+              --notes "Bizzy's Finance $VERSION. Windows: run the Setup exe (do not uninstall first). Mac: download the dmg, then in Terminal run: xattr -cr \"/Applications/Bizzy's Finance.app\" — macOS otherwise calls an unsigned GitHub download damaged."
           fi
