@@ -1,0 +1,99 @@
+{
+  "name": "bizzys-finance",
+  "version": "0.1.1",
+  "private": true,
+  "author": "Ross Turner",
+  "description": "Local-first multi-profile personal finance app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RossTurner85/bizzys-finance.git"
+  },
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.node.json --noEmit && vite build",
+    "electron:dev": "vite",
+    "preview": "vite preview",
+    "dist:win": "npm run build && electron-builder --win --publish never --config.directories.output=%LOCALAPPDATA%/BizzysFinance-release",
+    "dist:win-ci": "npm run build && electron-builder --win --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --publish never"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.9.1",
+    "date-fns": "^4.1.0",
+    "electron-updater": "^6.8.9",
+    "papaparse": "^5.5.2",
+    "pdf-parse": "^1.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/papaparse": "^5.3.15",
+    "@types/pdf-parse": "^1.1.4",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^34.3.0",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6"
+  },
+  "build": {
+    "appId": "com.bizzys.finance",
+    "productName": "Bizzy's Finance",
+    "copyright": "Copyright © Ross Turner",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist",
+      "dist-electron"
+    ],
+    "asarUnpack": [
+      "**/*.{node,dll}",
+      "**/better-sqlite3/**",
+      "**/pdf-parse/**"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "RossTurner85",
+      "repo": "bizzys-finance"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "Bizzys-Finance-Setup-${version}.${ext}",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Bizzy's Finance",
+      "artifactName": "Bizzys-Finance-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.finance",
+      "artifactName": "Bizzys-Finance-${version}.${ext}",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
+  }
+}
